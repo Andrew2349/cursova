@@ -1,0 +1,55 @@
+{% extends "page_base.html" %}
+{% block title %}Purchasing{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+
+                <div class="col-md-6">
+                    <img class="img-fluid car-img" src="{{ car.img }}" alt="Car Image">
+                </div>
+
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bolder">{{ car.brand }} {{ car.model }}</h1>
+                    <p class="lead text-muted"><strong class="text-dark">Year:</strong> {{ car.year }}</p>
+                    <p class="lead text-muted"><strong class="text-dark">Color:</strong> {{ car.color }}</p>
+                    <p class="lead text-muted"><strong class="text-dark">Body Type:</strong> {{ car.body_type }}</p>
+                    <p class="lead text-muted"><strong class="text-dark">Fuel Type:</strong> {{ car.fuel_type }}</p>
+                    <p class="lead text-muted"><strong class="text-dark">Engine
+                        Capacity:</strong> {{ car.engine_capacity }}L</p>
+                    <p class="lead text-muted"><strong class="text-dark">Mileage:</strong> {{ car.mileage }} km</p>
+
+
+                    <div class="fs-5 mb-4">
+
+                    </div>
+
+
+                    {% if car.available %}
+                        <h4 class="text-success">In Stock</h4>
+                        <div class="price-box">
+                            <h4>{% if car.discount != 0 %}
+                                <span class="text-muted text-decoration-line-through">{{ car.price }} $</span>
+                                {{ car.final_price }} $
+                            {% else %}
+                                {{ car.price }} $
+                            {% endif %}</h4>
+                            {% if user.is_authenticated %}
+                                <form method="POST" action="{% url 'order' car.id %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-lg" type="submit">Make order</button>
+                                </form>
+                            {% else %}
+                                <a class="btn btn-primary btn-lg" href="/login/">Make order</a>
+                            {% endif %}
+                        </div>
+
+                    {% else %}
+                        <p class="text-danger">Out of Stock</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

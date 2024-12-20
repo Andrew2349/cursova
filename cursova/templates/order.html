@@ -1,0 +1,62 @@
+{% extends "page_base.html" %}
+{% block title %}Purchasing{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-mb-2">
+                    <h1 class="fw-bold mb-4 order">Your order</h1>
+                </div>
+
+                <div class="col-md-5">
+                    <img class="img-fluid car-img" src="{{ order.car.img }}" alt="Car Image">
+                </div>
+
+                <div class="col-md-5">
+                    <h3><strong class="text-dark">Purchaser</strong>: {{ order.custom_user.fullname }}</h3>
+                    <h3><strong class="text-dark">Email</strong>: {{ order.custom_user.email }}</h3>
+                    <h3><strong class="text-dark">Phone number</strong>: {{ order.custom_user.phone }}</h3>
+                    <h3><strong class="text-dark">Car</strong>: {{ order.car.brand }} {{ order.car.model }}</h3>
+
+                    <div class="price-box">
+                        <h3><strong class="text-dark">Price</strong>: </h3>
+                        <h4>{% if order.car.discount != 0 %}
+                            <span class="text-muted text-decoration-line-through"> {{ order.car.price }} $</span>
+                            {{ order.car.final_price }} $
+                        {% else %}
+                            {{ order.car.price }} $
+                        {% endif %}</h4>
+
+                    </div>
+                    <h3><strong class="text-dark">Date</strong>: {{ order.date }}</h3>
+
+
+                </div>
+            </div>
+            <div class="order mt-4">
+                <a class="btn btn-primary" href="/">Home</a>
+            </div>
+            
+
+        </div>
+    
+    </section>
+    <section class="py-5 bg-light mt-4">
+                <div class="container px-4 px-lg-5 text-center">
+                    <h2 class="fw-bolder mb-4">Congratulations</h2>
+                    <p>
+                        Now you are the proud owner of a fantastic {{ order.car.brand }} {{ order.car.model }}.
+                        Our team is currently processing your order to ensure a smooth and fast delivery.
+                    </p>
+                    <p>
+                        You will receive an email confirmation shortly with all the details about your purchase.
+                        If you have any questions, feel free to contact our support team at <a href="#">support@car_dealersip.com</a>.
+                        We’re here to help 24/7
+                    </p>
+                    <p>
+                        Thank you for choosing us. We hope will you enjoy your new car and will have a great driving experience!
+                    </p>
+                </div>
+            </section>
+{% endblock %}

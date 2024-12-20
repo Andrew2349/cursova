@@ -1,0 +1,22 @@
+{% extends "auth_base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="row auth-page text-center ">
+    <div class="col-12 big-margin-top">
+        <h1>Supplier</h1>
+    </div>
+    </div>
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form method="post" class="form-group text-white">
+                {% csrf_token %}
+
+                {{ form|crispy }}
+                
+                <button type="submit" class="btn btn-success mt-4">Submit</button>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+{% endblock %}

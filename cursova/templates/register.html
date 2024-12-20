@@ -1,0 +1,27 @@
+{% extends "auth_base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login/Register{% endblock %}
+{% block content %}
+
+    <div class="row justify-content-center auth-page">
+        <div class="col-0 col-md-2"></div>
+        <div class="col-12 col-md-6">
+
+            <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+
+            <form method="post" class="form-group text-white">
+                {% csrf_token %}
+
+                {{form|crispy}}
+                <div class="mb-4"><a href="/login">Already have account? Then just sign in</a></div> 
+                <button type="submit" class="btn btn-success">Sign up</button>
+            </form>
+
+        </div>
+        <<div class="col-0 col-md-2"></div>
+    </div>
+
+
+{% endblock %}

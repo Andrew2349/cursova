@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}
+    Home
+{% endblock %}
+{% block inner %}
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="d-flex justify-content-center">
+                <div class="text-center">
+                    <h1 class="mx-auto my-0 text-uppercase">Car Dealership</h1>
+                    <h2 class="text-white-50 mx-auto mt-2 mb-5">Come - Buy - Get high!</h2>
+                    <a class="btn btn-primary" href="/catalog/">Buy now</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="container page mt-4">
+
+
+            <section class="py-5 text-black">
+                <div class="container text-center">
+                    <h2 class="fw-bolder mb-4">Fun Facts About Cars</h2>
+                    <p class="lead mb-4">Did you know? Cars are fascinating machines, and here are some cool facts about
+                        them:</p>
+                    <div class="row gx-4 gx-lg-5">
+                        <div class="col-md-4 mb-3">
+                            <h5 class="fw-bolder">1. The First Car</h5>
+                            <p class="text-muted">The first car was built in 1885 by Karl Benz, and it was called the
+                                Benz Patent-Motorwagen.</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <h5 class="fw-bolder">2. The Longest Car</h5>
+                            <p class="text-muted">The longest car in the world is a limousine that's over 100 feet
+                                long!</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <h5 class="fw-bolder">3. Fastest Production Car</h5>
+                            <p class="text-muted">The Bugatti Chiron Super Sport 300+ holds the record for the fastest
+                                production car, reaching 304 mph!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-5 text-black">
+                <div class="container text-center">
+                    <h2 class="fw-bolder">Ready to Drive Away?</h2>
+                    <p class="lead mb-4">Your dream car is just a click away. Explore our catalog today!</p>
+                    <img class="brand-img" src="./static/assets/img/brands2.png">
+                    <img class="brand-img" src="./static/assets/img/brands3.png">
+                    <a href="/catalog/" class="btn btn-primary mt-4">Browse Cars</a>
+                </div>
+            </section>
+        </div>
+
+    </section>
+{% endblock %}

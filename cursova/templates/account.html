@@ -1,0 +1,123 @@
+{% extends "page_base.html" %}
+
+{% block title %}
+    Account
+{% endblock %}
+
+{% block content %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-md-6">
+                    
+                    <img class="user-img" src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}/media/profile_images/user.png{% endif %}" alt="User Image" style="width: 300px; height: 300px; border-radius: 50%; object-fit: cover;">
+<button type="button" class="btn btn-secondary mt-3 avatar-btn" id="change-avatar-btn">Change Avatar</button>
+                   
+                    <input type="file" name="profile_image" id="profile-image-input" class="form-control" style="display: none;" accept="image/*">
+                    
+                    
+                    <form action="{% url 'update_profile_image' %}" method="POST" enctype="multipart/form-data" id="profile-image-form" style="display: none;">
+                        {% csrf_token %}
+                        <input type="file" name="profile_image" id="hidden-profile-image" class="form-control">
+                        <button type="submit" class="btn btn-primary mt-4">Upload</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h3><strong class="text-dark">Name</strong>: {{ user.fullname }}</h3>
+                    <h3><strong class="text-dark">Email</strong>: {{ user.email }}</h3>
+                    <h3><strong class="text-dark">Phone number</strong>: {{ user.phone }}</h3>
+                    {% if user.is_admin %}
+                        <h3><strong class="text-dark">Status</strong>: administrator</h3>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light big-margin-top">
+        <div class="container px-4 px-lg-5 text-center">
+            <h2 class="fw-bolder mb-4">My orders</h2>
+            <div class="row mt-4 gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for order in orders %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <div class="text-white position-absolute" style="top: 0.5rem; right: 0.5rem">
+                                {% if order.car.discount != 0 %}
+                                    <div class="bg-dark badge p-2">
+                                        Sale
+                                    </div>
+
+
+                                {% endif %}
+                                <div class="bg-{{ order.color }} badge p-2 text-dark">
+                                        {{ order.status }}
+                                    </div>
+                            </div>
+
+                            <!-- Product image-->
+                            <img class="card-img-top car-img" src="{{ order.car.img }}" alt="...">
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ order.car.brand }} - {{ order.car.model }}</h5>
+                                    <!-- Product reviews-->
+                                    <div class="d-flex justify-content-center small mb-2">
+                                        <i class="fa-solid fa-star {% if  1000 <= order.car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  5000 <= order.car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  10000 <= order.car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  25000 <= order.car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  40000 <= order.car.price %} text-warning {% endif %}"></i>
+
+
+                                    </div>
+                                    <!-- Product price-->
+                                    {% if order.car.discount != 0 %}
+                                        <span class="text-muted text-decoration-line-through">{{ order.car.price }} $</span>
+                                        {{ order.car.final_price }} $
+                                    {% else %}
+                                        {{ order.car.price }} $
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto"
+                                                            href="{% url 'order_detail' order.id %}">Check</a></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+    </section>
+
+    <div class="pagination mb-4">
+        <span class="step-links mx-auto my-0 fw-bolder">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}">
+                    <i class="fa-solid fa-backward-fast"></i>
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}">
+                    <i class="fa-solid fa-left-long"></i>
+                </a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}">
+                    <i class="fa-solid fa-right-long"></i>
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}">
+                    <i class="fa-solid fa-forward-fast"></i>
+                </a>
+            {% endif %}
+        </span>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "page_base.html" %}
+{% block title %}
+    Catalog
+{% endblock %}
+{% block content %}
+
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-2">
+            <form method="GET" action="{% url 'catalog' %}" class="row">
+               
+                <div class="row mb-4 price-row">
+                    <div class="col-5">
+
+                        <div class="price-row">
+
+                            <input class="form_control_container__time__input slider-number" type="number" id="fromInput"
+                                   value="{% if request.GET.min %}{{ request.GET.min }}{% else %}0{% endif %}" min="0" max="200000" name="min">
+
+                            <div class="range_container">
+
+                                <div class="sliders_control">
+                                    <input id="fromSlider" type="range" value="{% if request.GET.min %}{{ request.GET.min }}{% else %}0{% endif %}" min="0" max="200000" step="1000">
+                                    <input id="toSlider" type="range" value="{% if request.GET.max %}{{ request.GET.max }}{% else %}200000{% endif %}" min="0" max="200000" step="1000">
+                                </div>
+
+
+                            </div>
+                            <input class="form_control_container__time__input slider-number" type="number" id="toInput" value="{% if request.GET.max %}{{ request.GET.max }}{% else %}200000{% endif %}"
+                                   min="0" max="200000" name="max">
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="input-group ms-4">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Brand</label>
+                            </div>
+                            <select class="custom-select" id="inputGroupSelect01" name="brand">
+                                <option selected></option>
+                                {% for brand in brands %}
+                                    <option {% if request.GET.brand == brand %}selected{% endif %}>{{ brand }}</option>
+                                {% endfor %}
+
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="input-group ">
+
+                            <input  value="{% if request.GET.model %}{{request.GET.model}}{% endif %}" type="text" class="form-control" placeholder="Model"
+                                   aria-describedby="basic-addon1" name="model">
+                        </div>
+                    </div>
+                    <div class="col-1">
+
+                        <button type="submit" class="btn btn-primary ">Search</button>
+
+                    </div>
+                </div>
+            </form>
+            <div class="row mt-4 gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for car in cars %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <div class="text-white position-absolute" style="top: 0.5rem; right: 0.5rem">
+                                {% if car.discount != 0 %}
+                                    <div class="bg-dark badge p-2">
+                                        Sale
+                                    </div>
+                            
+
+                                {% endif %}
+                                {% if car.available %} 
+                                    <div class="bg-dark-success badge p-2">
+                                        In stock
+                                    </div>
+                                {% else %}
+                                    <div class="bg-dark-danger badge p-2">
+                                        Out of stock
+                                    </div>
+                                {% endif %}
+                                {% if user.is_admin %}
+                                    <a class="nav-link bg-dark p-2 mb-1 badge" href="/admin/car/{{ car.id }}"><i
+                                            class="fa-solid fa-pencil"></i></a>
+                                    <a class="nav-link bg-dark p-2 badge" href="#" data-bs-toggle="modal"
+                                       data-bs-target="#exampleModal{{ car.id }}"><i
+                                            class="fa-solid fa-trash"></i></a>
+                                    <!-- Button trigger modal -->
+
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ car.id }}" tabindex="-1"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content text-dark">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Remove
+                                                        confirmation</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete {{ car.model }}?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancel
+                                                    </button>
+                                                    <form method="POST" action="{% url 'delete' car.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                                    </form>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Product image-->
+                            <img class="card-img-top car-img" src="{{ car.img }}" alt="...">
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ car.brand }} - {{ car.model }}</h5>
+                                    <!-- Product reviews-->
+                                    <div class="d-flex justify-content-center small mb-2">
+                                        <i class="fa-solid fa-star {% if  1000 <= car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  5000 <= car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  10000 <= car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  25000 <= car.price %} text-warning {% endif %}"></i>
+                                        <i class="fa-solid fa-star {% if  40000 <= car.price %} text-warning {% endif %}"></i>
+
+
+                                    </div>
+                                    <!-- Product price-->
+                                    {% if car.discount != 0 %}
+                                        <span class="text-muted text-decoration-line-through">{{ car.price }} $</span>
+                                        {{ car.final_price }} $
+                                    {% else %}
+                                        {{ car.price }} $
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto"
+                                                            href="{% url 'purchasing' car.id %}">Buy</a></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+    </section>
+    <div class="pagination">
+    <span class="step-links mx-auto my-0 fw-bolder">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i class="fa-solid fa-backward-fast"></i></a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i class="fa-solid fa-left-long"></i></a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i class="fa-solid fa-right-long"></i></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i class="fa-solid fa-forward-fast"></i></a>
+        {% endif %}
+    </span>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "page_base.html" %}
+{% block content %}
+<section class="py-5">
+   <div class="container-fluid ">
+      <div class="row">
+         <div class="col-12">
+            <form method="GET" action="{% url 'orders' %}" class="from-row big-margin">
+               <div class="input-group">
+                  <div class="input-group-prepend">
+                     <label class="input-group-text" for="inputGroupSelect01">Brand</label>
+                  </div>
+                  <select class="custom-select" id="inputGroupSelect01" name="brand">
+                     <option selected></option>
+                     {% for brand in brands %}
+                     <option {% if request.GET.brand == brand %}selected{% endif %}>{{ brand }}</option>
+                     {% endfor %}
+                  </select>
+               </div>
+               <div class="input-group ">
+                  <div class="input-group-prepend">
+                     <label class="input-group-text" for="inputGroupSelect01">Purchaser</label>
+                  </div>
+                  <select class="custom-select" id="inputGroupSelect01" name="customer">
+                     <option selected></option>
+                     {% for customer in customers %}
+                     <option {% if request.GET.customer == customer %}selected{% endif %}>{{ customer }}</option>
+                     {% endfor %}
+                  </select>
+               </div>
+               <div class="input-group ">
+                  <div class="input-group-prepend">
+                     <label class="input-group-text" for="inputGroupSelect01">From</label>
+                  </div>
+                  <input name="from_date" id="inputGroupSelect01" type="date"
+                     value="{% if request.GET.from_date %}{{ request.GET.from_date }}{% endif %}">
+               </div>
+               <div class="input-group ">
+                  <div class="input-group-prepend">
+                     <label class="input-group-text" for="inputGroupSelect02">To</label>
+                  </div>
+                  <input name="to_date" id="inputGroupSelect02" type="date"
+                     value="{% if request.GET.to_date %}{{ request.GET.to_date }}{% endif %}">
+               </div>
+               <button type="submit" class="btn btn-primary ">Search</button>
+            </form>
+         </div>
+      </div>
+      <div class="row mt-5">
+         <div class="col-12 big-margin">
+            <table class="table table-success table-striped table-hover fs-5 mt-5 ">
+               <tr class="text-uppercase">
+                  <th>№</th>
+                  <th>Brand</th>
+                  <th>Model</th>
+                  <th>Price</th>
+                  <th>Supplier</th>
+                  <th>Purchaser</th>
+                  <th>Email</th>
+                  <th>Phone number</th>
+                  <th>Date</th>
+                  <th>Status</th>  
+                  <th></th>
+                  <th></th>
+               </tr>
+               {% for order in orders %}
+               <tr>
+                  <td>{{ order.id }}</td>
+                  <td>{{ order.car.brand }}</td>
+                  <td>{{ order.car.model }}</td>
+                  <td>{{ order.price }}</td>
+                  <td>{{ order.car.supplier.name }}</td>
+                  <td>{{ order.custom_user.fullname }}</td>
+                  <td>{{ order.custom_user.email }}</td>
+                  <td>{{ order.custom_user.phone }}</td>
+                  <td>{{ order.date }}</td>
+                  <td>{{ order.status }}</td>
+               <td>
+                   <a href="{% url 'update_order' order.id %}" title="Edit" ><i class="fa-solid fa-pen"></i></a>
+               </td>
+                  <td>
+                     {% if user.is_admin %}
+                     <a class="nav-link bg-dark p-2 badge" href="#" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal{{ order.id }}"><i
+                        class="fa-solid fa-trash"></i></a>
+                     <div class="modal fade" id="exampleModal{{ order.id }}" tabindex="-1"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                           <div class="modal-content text-dark">
+                              <div class="modal-header">
+                                 <h5 class="modal-title" id="exampleModalLabel">Remove
+                                    confirmation
+                                 </h5>
+                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                 Are you sure you want to delete Order №{{ order.id }}?
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancel
+                                 </button>
+                                 <form method="POST" action="{% url 'delete_order' order.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Delete
+                                    </button>
+                                 </form>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     {% endif %}
+                  </td>
+               
+               </tr>
+               {% endfor %}
+            </table>
+            <div class="pagination">
+               <span class="step-links mx-auto my-0 fw-bolder">
+               {% if page_obj.has_previous %}
+               <a href="?page=1{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i
+                  class="fa-solid fa-backward-fast"></i></a>
+               <a href="?page=
+                  {{ page_obj.previous_page_number }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i
+                  class="fa-solid fa-left-long"></i></a>
+               {% endif %}
+               <span class="current">
+               Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+               </span>
+               {% if page_obj.has_next %}
+               <a href="?page=
+                  {{ page_obj.next_page_number }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i
+                  class="fa-solid fa-right-long"></i></a>
+               <a href="?page=
+                  {{ page_obj.paginator.num_pages }}{% if request.GET.min %}&min={{ request.GET.min }}{% endif %}{% if request.GET.max %}&max={{ request.GET.max }}{% endif %}{% if request.GET.model %}&model={{ request.GET.model }}{% endif %}{% if request.GET.brand %}&brand={{ request.GET.brand }}{% endif %}"><i
+                  class="fa-solid fa-forward-fast"></i></a>
+               {% endif %}
+               </span>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+{% endblock %}
