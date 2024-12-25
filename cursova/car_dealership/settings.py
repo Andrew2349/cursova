@@ -63,7 +63,7 @@ ROOT_URLCONF = 'car_dealership.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates", "/cursova/cursova/templates"],
+        'DIRS': ["templates", "/cursova/cursova/templates", "/Andrew2349/cursova/cursova/templates", "/home/Andrew2349/cursova/cursova/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
